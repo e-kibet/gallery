@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -13,12 +14,13 @@ const app = express();
 
 // connecting the database
 
-const MONGODB_URI = process.env.MONGODB_URI || config.mongoURI[app.settings.env]
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true  },(err)=>{
+const mongo_url = process.env.MONGODB_URI
+let dbName = 'gallery';
+mongoose.connect(`${mongo_url}${dbName}`, { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
     if (err) {
         console.log(err)
-    }else{
-        console.log(`Connected to Database: ${MONGODB_URI}`)
+    } else {
+        console.log(`Connected to Database: ${mongo_url}`)
     }
 });
 
@@ -46,9 +48,9 @@ app.use('/image', image);
 
 
 
- 
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT,() =>{
+app.listen(PORT, () => {
     console.log(`Server is listening at http://localhost:${PORT}`)
 });
 

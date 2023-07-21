@@ -1,0 +1,38 @@
+version: "3"
+networks:
+  proxynet:
+    external:
+      name: api.network
+services:
+  ms-gallery-service:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: ms-gallery-service
+    container_name: ms-gallery-service
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    networks:
+      - proxynet
+  ms-gallery-mongo:
+    image: mongo:latest
+    container_name: ms-gallery-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ekibet
+      MONGO_INITDB_ROOT_PASSWORD: ekibet
+    ports:
+      - 27018:27017
+    deploy:
+      replicas: 1
+    volumes:
+      - /root/data/mongod:/root/data
+      - /root/logs/mongod:/root/logs
+      - ./mongo/mongod.conf:/etc/mongod.conf
+    networks:
+      - proxynet
+    command: --config /etc/mongod.conf
+
+
+volumes:
+  mongodb_data_container:
